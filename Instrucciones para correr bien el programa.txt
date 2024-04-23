@@ -1,0 +1,4 @@
+Para que el programa funcione, las imagenes hay que descargarlas
+y guardarlas en la misma carpeta donde está el programa. 
+Debe introducir la ciudad o pais en la entrada de texto y
+darle a la lupa para encontrar los datos.
