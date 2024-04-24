@@ -3,6 +3,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from tkinter import *
 from tkinter import ttk
+import _tkinter # para errores
 import requests
 import math
 
@@ -171,10 +172,11 @@ def obtener_datos():
     if ciudad:
         # Intenta destruir ventana2 si existe
         try:
-            if ventana2 is not None:
-                ventana2.destroy()
+            
+            if ventana2 is not None:  
+                 ventana2.destroy()
         except _tkinter.TclError as e:
-            print(f"Ocurrió un error al destruir la ventana: {e}")
+            print(".")
     else:
         campo_vacio()
        
