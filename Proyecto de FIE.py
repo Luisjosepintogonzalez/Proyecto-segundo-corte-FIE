@@ -119,7 +119,8 @@ def obtener_datos():
     
     ciudad = texto.get()
     if ciudad:
-       ventana2.destroy()
+       if ventana2!=None:
+         ventana2.destroy()
     else:
        campo_vacio()
     api_key = "2e5a99bb31e2c59e130187ac05fe8675"
@@ -139,7 +140,6 @@ def obtener_datos():
         wind_speed= data["wind"]["speed"]
         global humidity
         humidity= data["main"]["humidity"]
-        print(humidity)
         global pressure
         pressure = data["main"]["pressure"]
         global description 
