@@ -1,7 +1,11 @@
+import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 from tkinter import *
+from tkinter import ttk
 import requests
 import math
-from tkinter import ttk, messagebox
+
 temp=0
 wind_speed=0
 humidity=0
@@ -13,75 +17,118 @@ ciudad=""
 descripcion_en_espanol={}
     
 #Barra de progreso
-ventana2=None
-barra_progreso=None
-porcentaje_etiqueta=None
-progreso_ventana=None
+ventana2 = None
+barra_progreso = None
+porcentaje_etiqueta = None
+progreso_ventana = None
+
+def generar_grafica():
+    global temp
+    global wind_speed
+    global humidity
+    global pressure
+    
+    #lista de etiquetas para los datos
+    etiquetas = ['Temperatura (°C)', 'Humedad (%)', 'Velocidad del viento (m/s)', 'Presión (hPa)']
+    
+    #lista con los valores de los datos
+    datos = [temp, humidity, wind_speed, pressure]
+    
+    # tamaño de la grafica en pulgadas
+    fig, ax = plt.subplots(figsize=(10.5, 6))
+    
+    # colores de las barras
+    barras = ax.bar(etiquetas, datos, color=['red', 'blue', 'green', 'orange'])
+    
+    # el titulo
+    ax.set_title('Estadísticas Meteorología Mundial USC')
+    
+    for barra in barras:
+        # para obtener el valor de la barra
+        valor = barra.get_height()
+        # poner el valor en la parte superior de la barra
+        ax.annotate(f'{valor:.2f}',  # formato del valor
+                    xy=(barra.get_x() + barra.get_width() / 2, valor),  # coordenadas para la anotación
+                    xytext=(0, 5),  # desplazamiento de la anotación
+                    textcoords='offset points',
+                    ha='center', va='bottom') 
+    
+    # mostrar la gráfica
+    plt.show()
+    
 def generar_pdf():
- global humidity
- global temp
- global wind_speed
- global pressure
- global description
- global punto_rocio
- global descripcion_en_espanol
- global ciudad
+    global humidity
+    global temp
+    global wind_speed
+    global pressure
+    global description
+    global punto_rocio
+    global descripcion_en_espanol
+    global ciudad
+    n = 2  # n es la cantidad de dígitos decimales que desea mostrar
 
- n=2 #n es la cantidad de digitó decimales que desea
+    nombre_pdf = "estadisticas.pdf"
+    c = canvas.Canvas(nombre_pdf, pagesize=letter)
+    c.setFont("Helvetica", 12) ### fuente y tamaño
+    c.drawString(72, 720, "Estadísticas Meteorología Mundial USC") # titulo
 
- print("Guardar en PDF")
- archivo=open("estadísticas.pdf","w+")
- archivo.write("Estadísticas climáticas\n\n")
- archivo.write(f"Descripción: {descripcion_en_espanol}\n")
- archivo.write(f"Humedad: {round(humidity,n)}%\n")
- archivo.write(f"velocidad del viento: {round(wind_speed,n)}m/s\n") # round(número,cantidad de decimales que desea móstrar)
- archivo.write(f"presión: {round(pressure,n)}hPa\n")
- archivo.write(f"punto de rocío: {round(punto_rocio,n)}\n")
- archivo.close()
+    # para escribir en el archivo
+    c.drawString(72, 700, f"Descripción: {descripcion_en_espanol}")
+    c.drawString(72, 680, f"Humedad: {round(humidity, n)}%")
+    c.drawString(72, 660, f"Velocidad del viento: {round(wind_speed, n)} m/s")
+    c.drawString(72, 640, f"Presión: {round(pressure, n)} hPa")
+    c.drawString(72, 620, f"Punto de rocío: {round(punto_rocio, n)}")
+    # guardar el PDF
+    c.showPage()  # finalizar la página
+    c.save()  # guardar el archivo PDF
+    messagebox.showinfo("Éxito", f"Archivo PDF '{nombre_pdf}' creado con éxito.")
 
 def generar_csv():
- global humidity
- global temp
- global wind_speed
- global pressure
- global description
- global punto_rocio
- global descripcion_en_espanol
+    global humidity
+    global temp
+    global wind_speed
+    global pressure
+    global description
+    global punto_rocio
+    global descripcion_en_espanol
+    n = 2  # n es la cantidad de dígitos decimales que deseas mostrar
 
- n=2 #n es la cantidad de digitó decimales que desea
+    nombre_csv = "estadisticas.csv"
 
- print("Generar Archivo CSV")
- archivo=open("estadísticas.csv","w+")
- archivo=open("estadísticas.csv","w+")
- archivo.write("Estadísticas climáticas\n\n")
- archivo.write(f"Descripción: {descripcion_en_espanol}\n")
- archivo.write(f"Humedad: {round(humidity,n)}%\n")
- archivo.write(f"velocidad del viento: {round(wind_speed,n)}m/s\n") # round(número,cantidad de decimales que desea móstrar)
- archivo.write(f"presión: {round(pressure,n)}hPa\n")
- archivo.write(f"punto de rocío: {round(punto_rocio,n)}\n")
- archivo.close()
+    # generar el archivo CSV
+    with open(nombre_csv, "w") as archivo:
+        archivo.write("Estadísticas climáticas\n\n")
+        archivo.write(f"Descripción: {descripcion_en_espanol}\n")
+        archivo.write(f"Humedad: {round(humidity, n)}%\n")
+        archivo.write(f"Velocidad del viento: {round(wind_speed, n)} m/s\n")
+        archivo.write(f"Presión: {round(pressure, n)} hPa\n")
+        archivo.write(f"Punto de rocío: {round(punto_rocio, n)}\n")
+        
+    messagebox.showinfo("Éxito", f"Archivo CSV '{nombre_csv}' creado con éxito.")
 
 def campo_vacio():
    global ciudad
    global ventana2
+   
    if not ciudad: #si no se llenó el campo de ciudad
        ventana2=Tk()
       # ventana2.overrideredirect(True)
        ventana2.title("Error de busqueda")
-       ventana2.geometry("500x100+500+250")
+       ventana2.geometry("600x100+400+440")
        ventana2.overrideredirect(True) #elimina la barra de titulo
        barra_titul=Frame(ventana2,bg="black")
        barra_titul.pack(fill="x")
        ventana2.resizable(False, False) 
        ventana2.config(bg="black")
-       texto2 = Label(ventana2, text="Error. Campo de la ciudad vacío, digite por favor la información", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
+       texto2 = Label(ventana2, text="Error. Campo de la ciudad vacío, digite por favor la", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
        texto2.place(x=0, y=0)
-       texto2 = Label(ventana2, text="para continuar.", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
+       texto2 = Label(ventana2, text="informacion para continuar.", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
        texto2.place(x=0, y=30)
    else:
        ventana2.destroy()
+       
 def actualizar_progreso():
-        # Obtener el valor actual de la barra de progreso
+        # obtener el valor actual de la barra de progreso
         global barra_progreso
         global porcentaje_etiqueta
         global progreso_ventana
@@ -89,7 +136,6 @@ def actualizar_progreso():
         
         # auemnto el valor de la barra de progreso
         if valor_actual < 100:
-
             barra_progreso["value"] = valor_actual + 10
             
             ## calcular y mostrar el porcentaje de progreso
@@ -117,7 +163,7 @@ def obtener_datos():
     porcentaje_etiqueta = Label(progreso_ventana, text="0%", font=("Helvetica", 12))
     porcentaje_etiqueta.pack()
     
-    # Inicializar el progreso de la barra
+    # inicializar el progreso de la barra
     barra_progreso["maximum"] = 100
     barra_progreso["value"] = 0
     
@@ -127,10 +173,12 @@ def obtener_datos():
          ventana2.destroy()
     else:
        campo_vacio()
+       
     api_key = "2e5a99bb31e2c59e130187ac05fe8675"
     url = f"https://api.openweathermap.org/data/2.5/weather?q={ciudad}&appid={api_key}&units=metric"
     res = requests.get(url)
     actualizar_progreso()
+    
     # Verificar el estado de la respuesta
     if res.status_code == 200:
         data = res.json()
@@ -139,17 +187,17 @@ def obtener_datos():
         c = 237.7
         # Extraer datos meteorológicos
         global temp 
-        temp=data["main"]["temp"]
+        temp = data["main"]["temp"]
         global wind_speed 
-        wind_speed= data["wind"]["speed"]
+        wind_speed = data["wind"]["speed"]
         global humidity
-        humidity= data["main"]["humidity"]
+        humidity = data["main"]["humidity"]
         global pressure
         pressure = data["main"]["pressure"]
         global description 
-        description= data["weather"][0]["description"]
+        description = data["weather"][0]["description"]
         global punto_rocio 
-        punto_rocio=math.log(humidity/100) + b*(temp)/(c + temp)
+        punto_rocio = math.log(humidity/100) + b*(temp)/(c + temp)
         
         
         #diccionario para que la descipcion salga en español
@@ -211,16 +259,13 @@ def obtener_datos():
         DESCRIPCION.config(text=descripcion_en_espanol)
         ROCIO.config(text=f"{punto_rocio:.2f}")
     else:
-        # si la respuesta no es exitosa muestra el código de error
-        error_message = res.json().get('message', 'Error desconocido')
-        print(f"Error: {res.status_code} - {error_message}")
+        campo_vacio()
+        
 def crear_menu(event):
     # Crear un menú desplegable
     menu = Menu(ventana, tearoff=0)
-    menu.add_command(label="Generar Estadísticas", command=lambda: print("Generar Estadísticas"))
-    
+    menu.add_command(label="Generar Estadísticas", command=generar_grafica)
     menu.add_command(label="Generar Archivo CSV", command=generar_csv)
-    
     menu.add_command(label="Guardar en PDF", command= generar_pdf)
     # Mostrar el menú
     menu.post(event.x_root, event.y_root)
