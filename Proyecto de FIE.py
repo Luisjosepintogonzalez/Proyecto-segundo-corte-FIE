@@ -124,6 +124,7 @@ def campo_vacio():
        texto2.place(x=0, y=0)
        texto2 = Label(ventana2, text="informacion para continuar.", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
        texto2.place(x=0, y=30)
+       ventana2.after(3000, ventana2.destroy)
    else:
        ventana2.destroy()
        
