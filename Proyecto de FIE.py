@@ -169,10 +169,14 @@ def obtener_datos():
     
     ciudad = texto.get()
     if ciudad:
-       if ventana2!=None:
-         ventana2.destroy()
+        # Intenta destruir ventana2 si existe
+        try:
+            if ventana2 is not None:
+                ventana2.destroy()
+        except _tkinter.TclError as e:
+            print(f"Ocurrió un error al destruir la ventana: {e}")
     else:
-       campo_vacio()
+        campo_vacio()
        
     api_key = "2e5a99bb31e2c59e130187ac05fe8675"
     url = f"https://api.openweathermap.org/data/2.5/weather?q={ciudad}&appid={api_key}&units=metric"
