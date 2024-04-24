@@ -66,9 +66,13 @@ def campo_vacio():
    global ventana2
    if not ciudad: #si no se llenó el campo de ciudad
        ventana2=Tk()
+      # ventana2.overrideredirect(True)
        ventana2.title("Error de busqueda")
        ventana2.geometry("500x100+500+250")
-       ventana2.resizable(False, False)
+       ventana2.overrideredirect(True) #elimina la barra de titulo
+       barra_titul=Frame(ventana2,bg="black")
+       barra_titul.pack(fill="x")
+       ventana2.resizable(False, False) 
        ventana2.config(bg="black")
        texto2 = Label(ventana2, text="Error. Campo de la ciudad vacío, digite por favor la información", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
        texto2.place(x=0, y=0)
