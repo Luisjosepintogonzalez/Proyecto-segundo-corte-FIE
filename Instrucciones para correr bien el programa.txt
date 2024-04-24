@@ -2,5 +2,3 @@ Para que el programa funcione, las imagenes hay que descargarlas
 y guardarlas en la misma carpeta donde está el programa. 
 Debe introducir la ciudad o pais en la entrada de texto y
 darle a la lupa para encontrar los datos.
-
-Si no logra abrir el archivo de estadísticas, use algún programa que ejecute código y abrala allí.
