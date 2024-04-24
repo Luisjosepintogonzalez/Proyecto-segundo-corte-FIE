@@ -124,7 +124,6 @@ def campo_vacio():
        texto2.place(x=0, y=0)
        texto2 = Label(ventana2, text="informacion para continuar.", font=("arial", 12, "bold"),fg="#30FD1B",bg="black")
        texto2.place(x=0, y=30)
-       ventana2.after(3000, ventana2.destroy)
    else:
        ventana2.destroy()
        
@@ -260,7 +259,17 @@ def obtener_datos():
         DESCRIPCION.config(text=descripcion_en_espanol)
         ROCIO.config(text=f"{punto_rocio:.2f}")
     else:
-        campo_vacio()
+         ventana_no_encontrada = Toplevel(ventana)
+         ventana_no_encontrada.title("ERROR")
+         ventana_no_encontrada.geometry("310x130+1000+300")
+    
+         mensaje = Label(ventana_no_encontrada, text="La ciudad no se encontró :(", font=("Helvetica", 12))
+         mensaje.pack(pady=20)
+    
+         # botón para cerrar la ventana
+         boton_cerrar = Button(ventana_no_encontrada, text="Cerrar", bg="gray", command=ventana_no_encontrada.destroy)
+         boton_cerrar.pack(pady=10)
+        
         
 def crear_menu(event):
     # Crear un menú desplegable
